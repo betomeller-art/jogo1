@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aventura na Floresta - Mia, Eliza e Pa&ccedil;oca</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <section class="top-bar" aria-label="Painel da aventura">
+        <div>
+          <h1>Aventura na Floresta</h1>
+          <p>Mia, Eliza e Pa&ccedil;oca procuram pistas no bosque encantado.</p>
+        </div>
+        <div class="stats" aria-label="Progresso">
+          <span><strong id="leafCount">0</strong>/6 folhas</span>
+          <span><strong id="berryCount">0</strong>/4 amoras</span>
+          <span><strong id="clueCount">0</strong>/3 pistas</span>
+        </div>
+      </section>
+
+      <section class="play-area">
+        <canvas id="game" width="960" height="600" aria-label="Jogo de exploracao na floresta"></canvas>
+        <aside class="side-panel" aria-label="Personagens e comandos">
+          <div class="portrait-grid">
+            <article>
+              <div class="avatar mia"></div>
+              <h2>Mia</h2>
+              <p>Sens&iacute;vel, criativa e capaz de entender os animais da floresta.</p>
+            </article>
+            <article>
+              <div class="avatar eliza"></div>
+              <h2>Eliza</h2>
+              <p>Inteligente, objetiva, sagaz e muito bem orientada nas trilhas.</p>
+            </article>
+            <article>
+              <div class="avatar pacoca"></div>
+              <h2>Pa&ccedil;oca</h2>
+              <p>Hamster s&iacute;ria especialista em farejar caminhos secretos.</p>
+            </article>
+          </div>
+
+          <div class="controls">
+            <button id="upBtn" type="button" aria-label="Mover para cima">&uarr;</button>
+            <div>
+              <button id="leftBtn" type="button" aria-label="Mover para esquerda">&larr;</button>
+              <button id="downBtn" type="button" aria-label="Mover para baixo">&darr;</button>
+              <button id="rightBtn" type="button" aria-label="Mover para direita">&rarr;</button>
+            </div>
+          </div>
+
+          <p class="hint">Use as setas ou WASD. Chegue perto dos brilhos para coletar.</p>
+          <div id="message" class="message" role="status"></div>
+          <button id="restartBtn" class="restart" type="button">Recomecar</button>
+        </aside>
+      </section>
+    </main>
+
+    <script src="game.js"></script>
+  </body>
+</html>

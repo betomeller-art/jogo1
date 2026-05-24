@@ -1,0 +1,334 @@
+:root {
+  color-scheme: light;
+  --ink: #243126;
+  --muted: #60705f;
+  --panel: #f8fbf1;
+  --line: #c7d7bc;
+  --accent: #2d7f5e;
+  --accent-dark: #1f5b44;
+  --sun: #f3c85a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(243, 200, 90, 0.22), transparent 22rem),
+    linear-gradient(135deg, #dcedcf, #b7d8bd 45%, #8ab99a);
+}
+
+.game-shell {
+  width: min(1320px, calc(100vw - 28px));
+  margin: 0 auto;
+  padding: 18px 0;
+}
+
+.top-bar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 4px 16px;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(1.8rem, 3vw, 3.1rem);
+  line-height: 1;
+}
+
+.top-bar p,
+.hint,
+.portrait-grid p {
+  color: var(--muted);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.stats span {
+  min-width: 118px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(248, 251, 241, 0.82);
+  text-align: center;
+  box-shadow: 0 10px 28px rgba(38, 79, 48, 0.12);
+}
+
+.play-area {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 16px;
+  align-items: stretch;
+}
+
+canvas {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  display: block;
+  border: 2px solid #345f3d;
+  border-radius: 8px;
+  background: #79aa6a;
+  box-shadow: 0 18px 42px rgba(31, 74, 42, 0.3);
+}
+
+.side-panel {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(248, 251, 241, 0.92);
+  box-shadow: 0 18px 42px rgba(31, 74, 42, 0.22);
+}
+
+.portrait-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.portrait-grid article {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  column-gap: 10px;
+  align-items: center;
+  min-height: 76px;
+  padding: 10px;
+  border: 1px solid #dbe6d3;
+  border-radius: 8px;
+  background: #fffef7;
+}
+
+.portrait-grid h2 {
+  font-size: 1rem;
+}
+
+.portrait-grid p {
+  grid-column: 2;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.avatar {
+  grid-row: span 2;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid rgba(36, 49, 38, 0.24);
+  background: linear-gradient(#f8e7ba, #d7bd84);
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar.mia,
+.avatar.eliza,
+.avatar.pacoca {
+  background-color: #f7e4b8;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-size: auto 92%;
+}
+
+.avatar.mia {
+  background-image: url("assets/characters/mia.png");
+}
+
+.avatar.eliza {
+  background-image: url("assets/characters/eliza.png");
+}
+
+.avatar.pacoca {
+  background-image: url("assets/characters/pacoca.png");
+  background-size: auto 78%;
+}
+
+.avatar.mia::before,
+.avatar.mia::after,
+.avatar.eliza::before,
+.avatar.eliza::after,
+.avatar.pacoca::before,
+.avatar.pacoca::after {
+  display: none;
+}
+
+.avatar::before,
+.avatar::after {
+  content: "";
+  position: absolute;
+}
+
+.avatar.mia::before {
+  left: 8px;
+  top: 2px;
+  width: 36px;
+  height: 42px;
+  border-radius: 48% 48% 42% 42%;
+  background:
+    linear-gradient(90deg, transparent 0 17%, rgba(255, 214, 155, 0.2) 18% 25%, transparent 26%),
+    #7a4824;
+}
+
+.avatar.mia::after {
+  left: 14px;
+  top: 14px;
+  width: 24px;
+  height: 27px;
+  border-radius: 46% 46% 48% 48%;
+  background:
+    radial-gradient(circle at 34% 47%, #2e8151 0 5%, transparent 6%),
+    radial-gradient(circle at 66% 47%, #2e8151 0 5%, transparent 6%),
+    radial-gradient(circle at 35% 59%, rgba(210, 116, 90, 0.24) 0 8%, transparent 9%),
+    radial-gradient(circle at 65% 59%, rgba(210, 116, 90, 0.24) 0 8%, transparent 9%),
+    linear-gradient(#f4d0a0, #eabf8d);
+  box-shadow: 0 -12px 0 -3px #7a4824, -9px 7px 0 -5px #a06535, 9px 7px 0 -5px #a06535, 7px 18px 0 -8px #2f9ac8, 0 19px 0 -7px #a7d83e;
+}
+
+.avatar.eliza::before {
+  left: 8px;
+  top: 0;
+  width: 36px;
+  height: 52px;
+  border-radius: 46% 46% 28% 28%;
+  background:
+    linear-gradient(90deg, transparent 0 35%, rgba(115, 70, 49, 0.52) 36% 43%, transparent 44%),
+    #2f1d17;
+}
+
+.avatar.eliza::after {
+  left: 15px;
+  top: 16px;
+  width: 22px;
+  height: 26px;
+  border-radius: 47% 47% 49% 49%;
+  background:
+    radial-gradient(circle at 35% 47%, #33251e 0 5%, transparent 6%),
+    radial-gradient(circle at 65% 47%, #33251e 0 5%, transparent 6%),
+    radial-gradient(circle at 50% 68%, #a56a57 0 5%, transparent 6%),
+    linear-gradient(#f2c997, #e8b782);
+  box-shadow: 0 -10px 0 -4px #2f1d17, -8px 10px 0 -4px #2f1d17, 8px 10px 0 -4px #2f1d17;
+}
+
+.avatar.pacoca {
+  background-color: #f7e4b8;
+  background-image: url("assets/characters/pacoca.png");
+}
+
+.avatar.pacoca::before {
+  left: 7px;
+  top: 9px;
+  width: 38px;
+  height: 32px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 47%, #1f1a17 0 4%, transparent 5%),
+    radial-gradient(circle at 65% 47%, #1f1a17 0 4%, transparent 5%),
+    radial-gradient(circle at 50% 58%, #6c3f32 0 4%, transparent 5%),
+    radial-gradient(ellipse at 50% 68%, #fff0c8 0 28%, transparent 29%),
+    linear-gradient(120deg, #efc27d, #d19048 65%, #a96530);
+  box-shadow: -8px -5px 0 -2px #c98944, 8px -5px 0 -2px #c98944;
+}
+
+.avatar.pacoca::after {
+  left: 12px;
+  top: 31px;
+  width: 28px;
+  height: 1px;
+  background: #6c3f32;
+  box-shadow: 0 4px 0 #6c3f32, 0 -4px 0 #6c3f32;
+}
+
+.controls {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  margin: 18px 0 12px;
+}
+
+.controls div {
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.controls button {
+  width: 54px;
+  height: 46px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: white;
+  font-weight: 800;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.14);
+}
+
+.controls button:active {
+  transform: translateY(1px);
+}
+
+.message {
+  min-height: 76px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #d5dfca;
+  border-radius: 8px;
+  background: #fffef7;
+  line-height: 1.35;
+}
+
+.restart {
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  background: var(--accent-dark);
+  color: white;
+  font-weight: 700;
+}
+
+@media (max-width: 860px) {
+  .top-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .stats {
+    justify-content: stretch;
+  }
+
+  .stats span {
+    flex: 1 1 120px;
+  }
+
+  .play-area {
+    grid-template-columns: 1fr;
+  }
+
+  .side-panel {
+    display: grid;
+    gap: 12px;
+  }
+}
