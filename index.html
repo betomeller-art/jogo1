@@ -7,6 +7,15 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <section id="titleScreen" class="title-screen" aria-label="Tela inicial do jogo">
+      <div class="title-art"></div>
+      <div class="title-content">
+        <h1>Mia, Eliza<br />e Pa&ccedil;oca</h1>
+        <p>A Grande Aventura da Floresta Perdida</p>
+        <button id="startBtn" type="button">Iniciar aventura</button>
+      </div>
+    </section>
+
     <main class="game-shell">
       <section class="top-bar" aria-label="Painel da aventura">
         <div>
@@ -14,15 +23,18 @@
           <p id="sceneSubtitle">Mia, Eliza e Pa&ccedil;oca procuram pistas no bosque encantado.</p>
         </div>
         <div class="stats" aria-label="Progresso">
-          <span>Fase <strong id="phaseCount">1</strong>/3</span>
-          <span><strong id="leafCount">0</strong>/6 folhas</span>
-          <span><strong id="berryCount">0</strong>/4 amoras</span>
-          <span><strong id="clueCount">0</strong>/3 pistas</span>
+          <span>Fase <strong id="phaseCount">1</strong>/4</span>
+          <span><strong id="scoreCount">0</strong> pontos</span>
+          <span><strong id="leafCount">0</strong> itens</span>
+          <span><strong id="berryCount">0</strong> ajudas</span>
+          <span><strong id="clueCount">0</strong> pistas</span>
         </div>
       </section>
 
       <section class="play-area">
-        <canvas id="game" width="960" height="600" aria-label="Jogo de exploracao na floresta"></canvas>
+        <div class="canvas-frame">
+          <canvas id="game" width="960" height="600" aria-label="Jogo de explora&ccedil;&atilde;o na floresta"></canvas>
+        </div>
         <aside class="side-panel" aria-label="Personagens e comandos">
           <div class="portrait-grid">
             <article>
@@ -33,12 +45,12 @@
             <article>
               <div class="avatar eliza"></div>
               <h2>Eliza</h2>
-              <p>Inteligente, objetiva, sagaz e muito bem orientada nas trilhas.</p>
+              <p>Inteligente, objetiva e muito bem orientada nas trilhas.</p>
             </article>
             <article>
               <div class="avatar pacoca"></div>
               <h2>Pa&ccedil;oca</h2>
-              <p>Hamster s&iacute;ria especialista em farejar caminhos secretos.</p>
+              <p>Uma hamster s&iacute;ria especialista em farejar caminhos secretos.</p>
             </article>
           </div>
 
@@ -51,12 +63,23 @@
             </div>
           </div>
 
-          <p class="hint">Use as setas ou WASD. Chegue perto dos brilhos para coletar.</p>
+          <button id="actionBtn" class="action-button" type="button">Pular</button>
+          <p class="hint">Use as setas ou WASD. Chegue perto dos itens brilhantes para responder e coletar.</p>
           <div id="message" class="message" role="status"></div>
-          <button id="restartBtn" class="restart" type="button">Recomecar</button>
+          <button id="soundBtn" class="sound-toggle" type="button">Ligar m&uacute;sica</button>
+          <button id="restartBtn" class="restart" type="button">Recome&ccedil;ar</button>
         </aside>
       </section>
     </main>
+
+    <div id="quizModal" class="quiz-modal" hidden>
+      <div class="quiz-card" role="dialog" aria-modal="true" aria-labelledby="quizQuestion">
+        <p class="quiz-kicker">Desafio</p>
+        <h2 id="quizQuestion"></h2>
+        <div id="quizAnswers" class="quiz-answers"></div>
+        <p id="quizFeedback" class="quiz-feedback"></p>
+      </div>
+    </div>
 
     <script src="game.js"></script>
   </body>
