@@ -9,12 +9,17 @@ const characterSprites = {
 };
 const sceneSprites = {
   forest: loadSprite("assets/backgrounds/forest.png"),
+  cave: loadSprite("assets/backgrounds/cave.png"),
+  lostCity: loadSprite("assets/backgrounds/lost-city.png"),
 };
 
 const ui = {
   leaves: document.getElementById("leafCount"),
   berries: document.getElementById("berryCount"),
   clues: document.getElementById("clueCount"),
+  phase: document.getElementById("phaseCount"),
+  title: document.getElementById("sceneTitle"),
+  subtitle: document.getElementById("sceneSubtitle"),
   message: document.getElementById("message"),
   restart: document.getElementById("restartBtn"),
 };
@@ -39,7 +44,60 @@ function setupCanvas() {
   ctx.imageSmoothingQuality = "high";
 }
 
+const phases = [
+  {
+    title: "Aventura na Floresta",
+    subtitle: "O grupo procura a caverna escondida no fim da trilha.",
+    background: "forest",
+    start: [118, 462],
+    portal: [762, 170, 68],
+    portalMessage: "A caverna chamou o grupo para dentro. Agora a aventura continua no subterraneo.",
+    blockedMessage: "A entrada da caverna esta perto, mas ainda faltam brilhos desta fase.",
+  },
+  {
+    title: "Subterraneo Cristalino",
+    subtitle: "Mia, Eliza e Pacoca seguem pelos tuneis iluminados por cristais.",
+    background: "cave",
+    start: [120, 492],
+    portal: [806, 88, 70],
+    portalMessage: "A luz no fim do tunel revelou uma cidade perdida no meio da selva.",
+    blockedMessage: "A saida esta iluminada, mas ainda faltam pistas no subterraneo.",
+  },
+  {
+    title: "Cidade Perdida",
+    subtitle: "As ruinas antigas guardam o segredo final da floresta.",
+    background: "lostCity",
+    start: [116, 488],
+    portal: [640, 266, 80],
+    portalMessage: "Mia, Eliza e Pacoca descobriram o coracao da cidade perdida!",
+    blockedMessage: "A praca antiga ainda guarda segredos para encontrar.",
+  },
+];
+
+const phaseItems = [
+  [
+    ["leaf", 244, 440],
+    ["leaf", 360, 336],
+    ["berry", 176, 270],
+    ["clue", 704, 186],
+  ],
+  [
+    ["leaf", 230, 422],
+    ["leaf", 488, 360],
+    ["berry", 612, 206],
+    ["berry", 810, 470],
+    ["clue", 790, 122],
+  ],
+  [
+    ["leaf", 300, 430],
+    ["leaf", 650, 314],
+    ["berry", 804, 456],
+    ["clue", 538, 240],
+  ],
+];
+
 const startState = () => ({
+  phase: 0,
   x: 118,
   y: 462,
   direction: 1,
@@ -47,22 +105,8 @@ const startState = () => ({
   berries: 0,
   clues: 0,
   won: false,
-  message: "A trilha comeca aqui. Mia acha que os brilhos podem revelar o caminho do riacho secreto.",
-  items: [
-    item("leaf", 244, 440),
-    item("leaf", 360, 336),
-    item("leaf", 628, 426),
-    item("leaf", 802, 322),
-    item("leaf", 722, 154),
-    item("leaf", 466, 138),
-    item("berry", 176, 270),
-    item("berry", 512, 506),
-    item("berry", 820, 486),
-    item("berry", 318, 112),
-    item("clue", 566, 264),
-    item("clue", 690, 78),
-    item("clue", 866, 172),
-  ],
+  message: "A trilha comeca aqui. Colete os brilhos para encontrar a entrada da caverna.",
+  items: createPhaseItems(0),
 });
 
 let state = startState();
@@ -112,6 +156,10 @@ function item(type, x, y) {
   return { type, x, y, taken: false, pulse: Math.random() * Math.PI * 2 };
 }
 
+function createPhaseItems(phaseIndex) {
+  return phaseItems[phaseIndex].map(([type, x, y]) => item(type, x, y));
+}
+
 function reset() {
   state = startState();
   syncUi();
@@ -121,6 +169,9 @@ function syncUi() {
   ui.leaves.textContent = state.leaves;
   ui.berries.textContent = state.berries;
   ui.clues.textContent = state.clues;
+  ui.phase.textContent = state.phase + 1;
+  ui.title.textContent = phases[state.phase].title;
+  ui.subtitle.textContent = phases[state.phase].subtitle;
   ui.message.textContent = state.message;
 }
 
@@ -141,14 +192,43 @@ function move(dx, dy) {
   }
 
   collectNearby();
+  checkPhasePortal();
 }
 
 function hitsObstacle(x, y) {
-  return caves.some(([cx, cy, width, height]) => {
-    const rx = width * 0.48;
-    const ry = height * 0.58;
-    return ((x - cx) ** 2) / (rx ** 2) + ((y - (cy + height * 0.12)) ** 2) / (ry ** 2) < 1.2;
-  });
+  return false;
+}
+
+function phaseItemsRemaining() {
+  return state.items.some((collectible) => !collectible.taken);
+}
+
+function checkPhasePortal() {
+  if (state.won) return;
+  const phase = phases[state.phase];
+  const [px, py, radius] = phase.portal;
+  if (Math.hypot(state.x - px, state.y - py) > radius) return;
+
+  if (phaseItemsRemaining()) {
+    state.message = phase.blockedMessage;
+    syncUi();
+    return;
+  }
+
+  if (state.phase < phases.length - 1) {
+    state.phase += 1;
+    const [sx, sy] = phases[state.phase].start;
+    state.x = sx;
+    state.y = sy;
+    state.items = createPhaseItems(state.phase);
+    state.message = phase.portalMessage;
+    syncUi();
+    return;
+  }
+
+  state.won = true;
+  state.message = phase.portalMessage;
+  syncUi();
 }
 
 function collectNearby() {
@@ -171,9 +251,10 @@ function collectNearby() {
       state.message = "Mia encontrou uma pista brilhante entre as raizes.";
     }
 
-    if (state.leaves === 6 && state.berries === 4 && state.clues === 3) {
-      state.won = true;
-      state.message = "A floresta abriu uma passagem! Mia, Eliza e Pacoca chegaram ao riacho secreto.";
+    if (!phaseItemsRemaining()) {
+      state.message = state.phase === phases.length - 1
+        ? "Todos os sinais foram encontrados. Agora sigam ate a praca antiga."
+        : "Todos os brilhos desta fase foram encontrados. Sigam para a passagem iluminada.";
     }
 
     syncUi();
@@ -183,21 +264,24 @@ function collectNearby() {
 function draw() {
   ctx.clearRect(0, 0, W, H);
   drawForestFloor();
-  if (!sceneSprites.forest.complete || sceneSprites.forest.naturalWidth === 0) {
+  const background = sceneSprites[phases[state.phase].background];
+  if (!background.complete || background.naturalWidth === 0) {
     drawTrail();
     drawRiverGate();
     caves.forEach(drawCave);
     trees.forEach(drawTree);
     stones.forEach(drawStone);
   }
+  drawPhasePortal();
   drawCollectibles();
   drawCharacters();
   if (state.won) drawWinGlow();
 }
 
 function drawForestFloor() {
-  if (sceneSprites.forest.complete && sceneSprites.forest.naturalWidth > 0) {
-    drawCoverImage(sceneSprites.forest, 0, 0, W, H);
+  const background = sceneSprites[phases[state.phase].background];
+  if (background.complete && background.naturalWidth > 0) {
+    drawCoverImage(background, 0, 0, W, H);
     return;
   }
 
@@ -230,6 +314,33 @@ function drawCoverImage(image, x, y, width, height) {
   const dx = x + (width - drawWidth) / 2;
   const dy = y + (height - drawHeight) / 2;
   ctx.drawImage(image, dx, dy, drawWidth, drawHeight);
+}
+
+function drawPhasePortal() {
+  if (state.won) return;
+  const [x, y, radius] = phases[state.phase].portal;
+  const time = performance.now() / 420;
+  const ready = !phaseItemsRemaining();
+  ctx.save();
+  ctx.globalAlpha = ready ? 0.82 : 0.32;
+  ctx.strokeStyle = ready ? "#fff0a6" : "#ffffff";
+  ctx.fillStyle = ready ? "rgba(255, 230, 103, 0.2)" : "rgba(255,255,255,0.12)";
+  ctx.lineWidth = ready ? 4 : 2;
+  ctx.beginPath();
+  ctx.ellipse(x, y, radius * (0.68 + Math.sin(time) * 0.04), radius * 0.28, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+
+  if (ready) {
+    ctx.fillStyle = "#fff5b8";
+    for (let i = 0; i < 8; i += 1) {
+      const a = time + (i * Math.PI * 2) / 8;
+      ctx.beginPath();
+      ctx.arc(x + Math.cos(a) * radius * 0.48, y + Math.sin(a) * radius * 0.18, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
 }
 
 function drawTrail() {
